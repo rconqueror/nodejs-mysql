@@ -1,0 +1,3 @@
+*.tfstate text eol=lf
+*.tfstate.backup text eol=lf
+*.tf text eol=lf

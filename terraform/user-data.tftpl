@@ -1,0 +1,27 @@
+#!/bin/bash
+
+# Git clone 
+git clone https://github.com/rconqueror/nodejs-mysql.git /home/ubuntu/nodejs-mysql
+cd /home/ubuntu/nodejs-mysql
+
+# install nodejs
+sudo apt update -y
+sudo apt install -y nodejs npm
+
+# edit env vars
+echo "DB_HOST=${db_host}" | sudo tee .env
+echo "DB_USER=${db_user}" | sudo tee -a .env
+echo "DB_PASS=${db_pass}" | sudo tee -a .env
+echo "DB_NAME=${db_name}" | sudo tee -a .env
+echo "TABLE_NAME=users" | sudo tee -a .env
+echo "PORT=80" | sudo tee -a .env
+
+# install and start server
+npm install
+echo "Installing pm2 to run nodejs app in background"
+sudo npm install -g pm2
+sudo pm2 start npm --name nodejs -- start   # runs your package.json "start" script
+sudo pm2 save                          # save process list
+sudo pm2 startup
+sudo env PATH=$PATH:/usr/bin /usr/local/lib/node_modules/pm2/bin/pm2 startup systemd -u ubuntu --hp /home/ubuntu
+                                
